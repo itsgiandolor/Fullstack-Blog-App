@@ -1,4 +1,5 @@
 import { useState } from "react";
+import {Navigate} from "react-router-dom";
 import ReactQuill from "react-quill";
 import 'react-quill/dist/quill.snow.css';
 
@@ -35,6 +36,7 @@ export default function CreatePost(){
         const response = await fetch('http://localhost:4000/post', {
             method: 'POST',
             body: data,
+            credentials: 'include',
         });
         if (response.ok){
             setRedirect(true);

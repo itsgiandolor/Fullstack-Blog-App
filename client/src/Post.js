@@ -1,17 +1,19 @@
-export default function Post() {
+import {formatISO9075} from "date-fns";
+
+export default function Post({title, summary, cover, content, createdAt, author}) {
     return (
         <div className="post">
             <div className="image">
-                <img src="https://sports.inquirer.net/files/2025/04/IMG_0366_UAAP-Season-87-womens-volleyball-NU-UST_NU-Lady-Bulldogs-celebration-scaled.jpg.avif"></img>
+                <img src={'http://localhost:4000/'+cover} alt=""></img>
             </div>
 
             <div className="text">
-                <h2>UAAP: NU escapes, forces UST to playoff vs La Salle for bonus</h2>
+                <h2>{title}</h2>
                 <p className="info">
-                    <a className="author">Marlo Cueto</a>
-                    <time>2025-27-04 21:04</time>
+                    <a className="author">{author.username}</a>
+                    <time>{formatISO9075(new Date(createdAt))}</time>
                 </p>
-                <p className="summary">National University slammed the door shut on University of Santo Tomas, sending a strong message ahead of the UAAP Season 87 womens volleyball Final Four.</p>
+                <p className="summary">{summary}</p>
             </div> 
         </div> 
     );
