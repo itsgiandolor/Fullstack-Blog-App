@@ -1,8 +1,9 @@
-import { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useContext, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { UserContext } from "./UserContext";
 
 export default function Header() {
+    const navigate = useNavigate();
     const {setUserInfo, userInfo} = useContext(UserContext);
     useEffect(() => {
         fetch('http://localhost:4000/profile', {
@@ -20,17 +21,20 @@ export default function Header() {
             method: 'POST',
         })
         setUserInfo(null);
+        navigate('/login');
     }
 
     const username = userInfo?.username;
 
     return(
         <header>
-            <Link to="/" className="logo">MyBlog</Link>
+            <Link to="/" className="logo">The Digital Notebook</Link>
             <nav>
                 {username && (
                     <>
-                    <Link to="/create">Create new post</Link>
+                    <span>Hello, {username}!</span>
+                    <Link to="/">Home</Link>
+                    <Link to="/create">Create</Link>
                     <a onClick={logout}>Logout</a>
                     </>
                 )}
