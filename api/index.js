@@ -135,19 +135,28 @@ app.get('/post/:id', async (req, res) => {
 
 app.delete('/post/:id', async (req, res) => {
     const { id } = req.params;
-    const postDoc = await Post.findById(id);
-    if (!postDoc) return res.status(404).json("Post not found");
-  
     const { token } = req.cookies;
-    jwt.verify(token, secret, {}, async (err, info) => {
-      if (err) return res.status(401).json("Unauthorized");
-      const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
-      if (!isAuthor) return res.status(403).json("Forbidden");
   
-      await Post.findByIdAndDelete(id);
-      res.json("Post deleted");
+    if (!token) return res.status(401).json("No token provided");
+  
+    jwt.verify(token, secret, async (err, userInfo) => {
+      if (err) return res.status(401).json("Invalid token");
+  
+      try {
+        const postDoc = await Post.findById(id);
+        if (!postDoc) return res.status(404).json("Post not found");
+  
+        const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(userInfo.id);
+        if (!isAuthor) return res.status(403).json("Forbidden");
+  
+        await postDoc.deleteOne();
+        res.status(200).json("Post deleted");
+      } catch (error) {
+        res.status(500).json("Server error");
+      }
     });
-  });
+});
+  
   
 
 
