@@ -133,5 +133,22 @@ app.get('/post/:id', async (req, res) => {
     res.json(postDoc);
 })
 
+app.delete('/post/:id', async (req, res) => {
+    const { id } = req.params;
+    const postDoc = await Post.findById(id);
+    if (!postDoc) return res.status(404).json("Post not found");
+  
+    const { token } = req.cookies;
+    jwt.verify(token, secret, {}, async (err, info) => {
+      if (err) return res.status(401).json("Unauthorized");
+      const isAuthor = JSON.stringify(postDoc.author) === JSON.stringify(info.id);
+      if (!isAuthor) return res.status(403).json("Forbidden");
+  
+      await Post.findByIdAndDelete(id);
+      res.json("Post deleted");
+    });
+  });
+  
+
 
 app.listen(4000);

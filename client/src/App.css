@@ -186,25 +186,33 @@ div.post-page div.content p {
 div.edit-row {
     text-align: center;
     margin-bottom: 1rem;
+    gap: 10px;
 }
-div.post-page a.edit-btn {
+div.post-page a.edit-btn,
+div.post-page button.delete-btn {
     background-color: var(--primary-color);
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 5px;
     color: #fff;
     padding: 15px 30px;
     border-radius: 5px;
     text-decoration: none;
     font-weight: bold;
+    width: auto;
+    font-family: inherit;
 }
-div.post-page a.edit-btn:hover {
+div.post-page a.edit-btn:hover,
+div.post-page button.delete-btn:hover {
     background-color: #6b4be5;
     text-decoration: underline;
 }
-a svg {
+
+svg {
     height: 20px;
 }
+
 .thumbnail {
     width: 100%;
     max-height: 200px;
