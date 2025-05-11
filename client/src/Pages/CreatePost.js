@@ -10,7 +10,7 @@ export default function CreatePost(){
     const [content,setContent] = useState('');
     const [files,setFile] = useState('');
     const [redirect,setRedirect] = useState(false);
-    async function createNewPost(ev){
+    async function createNewPost(ev){ // Sends a POST request to /post with FormData
         const data = new FormData();
         data.set('title', title);
         data.set('summary', summary);

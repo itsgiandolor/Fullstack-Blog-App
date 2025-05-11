@@ -7,7 +7,7 @@ export default function LoginPage() {
     const [password,setPassword] = useState('');
     const [redirect,setRedirect] = useState(false);
     const {setUserInfo} = useContext(UserContext);
-    async function login(ev){
+    async function login(ev){ // Sends a POST request to /login wth JSON body
         ev.preventDefault();
         const response = await fetch('http://localhost:4000/login', {
             method: 'POST',
@@ -15,7 +15,7 @@ export default function LoginPage() {
             headers: {'Content-Type':'application/json'},
             credentials: 'include',
         });
-        if (response.ok){
+        if (response.ok){ // sets userInfo and redirects to homepage if login was successful
             response.json().then(userInfo => {
                 setUserInfo(userInfo);
                 setRedirect(true);

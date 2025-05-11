@@ -26,7 +26,7 @@ export default function EditPost() {
         return <Navigate to={'/'} />
     }
 
-    async function updatePost(ev) {
+    async function updatePost(ev) { // Sends a PUT request to /post with updated FormData
         ev.preventDefault();
         const data = new FormData();
         data.set('title', title);

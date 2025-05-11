@@ -11,7 +11,7 @@ export default function PostPage(){
     const navigate = useNavigate();
     useEffect(() =>{
         
-        fetch(`http://localhost:4000/post/${id}`)
+        fetch(`http://localhost:4000/post/${id}`) // Fetches post data from a single post using the ID
             .then(response => {
                 response.json().then(postInfo => {
                     setPostInfo(postInfo);
@@ -19,7 +19,7 @@ export default function PostPage(){
             });
     }, []);
 
-    function deletePost() {
+    function deletePost() { // Sends a DELETE request to the /post/:id 
     const confirmDelete = window.confirm("Are you sure you want to delete this post?");
     if (!confirmDelete) return;
 
@@ -37,7 +37,7 @@ export default function PostPage(){
 
     if (!postInfo) return '';
 
-    const canEditOrDelete = userInfo && userInfo.id === postInfo.author._id;
+    const canEditOrDelete = userInfo && userInfo.id === postInfo.author._id; // If userInfo.id matches postInfo.author_id, shows EDIT/DELETE
 
     return (
         <div className="post-page">

@@ -26,19 +26,19 @@ export default function Header() {
 
     const username = userInfo?.username;
 
-    return(
+    return( 
         <header>
             <Link to="/" className="logo">The Digital Notebook</Link>
             <nav>
-                {username && (
+                {username && ( // If user logged in = "Home" & "Create new post" & "Logout"
                     <>
                     <span>Hello, {username}!</span>
                     <Link to="/">Home</Link>
                     <Link to="/create">Create</Link>
-                    <a onClick={logout}>Logout</a>
-                    </>
+                    <a onClick={logout}>Logout</a> 
+                    </> // Calls logout and clears userInfo
                 )}
-                {!username && (
+                {!username && ( // Otherwise, "Login" & "Register"
                     <>
                         <Link to="/login">Login</Link>
                         <Link to="/register">Register</Link>

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const {Schema, model} = mongoose;
 
+// Stores blog posts and relates them to users via author
 const PostSchema = new Schema({
     title:String,
     summary:String,

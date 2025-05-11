@@ -17,11 +17,13 @@ const secret = 'asdfghjkloiuytre123456';
 app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
 app.use(express.json());
 app.use(cookieParser());
-app.use('/uploads', express.static(__dirname + '/uploads'));
+app.use('/uploads', express.static(__dirname + '/uploads')); //Middleware for uploaded images and stores them locally 
 
+// Database Connection
 mongoose.connect('mongodb+srv://gdolor:gdolor@cluster0.upvitmk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0');
 
-app.post('/register', (req, res) =>{
+// Authentication Routes
+app.post('/register', (req, res) =>{ // Registers a new user by hashing the password
     const {username,password} = req.body;
     try{
         const userDoc = User.create({
@@ -31,11 +33,9 @@ app.post('/register', (req, res) =>{
     } catch(e){
         res.status(400).json(e);
     }
-    
-    
 });
 
-app.post('/login', async (req,res) => {
+app.post('/login', async (req,res) => { // Verifies credentials and sends a JWT token as a cookie
     const {username,password} = req.body;
     const userDoc = await User.findOne({username});
     const passOk = bcrypt.compareSync(password, userDoc.password);
@@ -54,7 +54,7 @@ app.post('/login', async (req,res) => {
     }
 });
 
-app.get('/profile', (req,res) => {
+app.get('/profile', (req,res) => { // Returns user info (from the token)
     const {token} = req.cookies;
     jwt.verify(token, secret, {}, (err, info) =>{
         if (err) throw err;
@@ -62,11 +62,12 @@ app.get('/profile', (req,res) => {
     });
 });
 
-app.post('/logout', (req,res) => {
+app.post('/logout', (req,res) => { // Clears the authentication token cookie
     res.cookie('token', '').json('ok');
 })
 
-app.post('/post', uploadMiddleware.single('file'), async (req,res) => {
+// Blog Post Routes
+app.post('/post', uploadMiddleware.single('file'), async (req,res) => { // Creates a new blog post 
     const {originalname, path} = req.file;
     const parts = originalname.split('.');
     const ext = parts[parts.length-1];
@@ -74,7 +75,7 @@ app.post('/post', uploadMiddleware.single('file'), async (req,res) => {
     fs.renameSync(path, newPath);
 
     const {token} = req.cookies;
-    jwt.verify(token, secret, {}, async (err, info) =>{
+    jwt.verify(token, secret, {}, async (err, info) =>{ // Verifies the user via JWT
         if (err) throw err;
         const {title,summary,content} = req.body;
         const postDoc = await Post.create({
@@ -88,7 +89,7 @@ app.post('/post', uploadMiddleware.single('file'), async (req,res) => {
     });
 })
 
-app.put('/post', uploadMiddleware.single('file'), async (req,res) => {
+app.put('/post', uploadMiddleware.single('file'), async (req,res) => { // Updates a blog post
     let newPath = null;
     if (req.file){
         const {originalname, path} = req.file;
@@ -99,7 +100,7 @@ app.put('/post', uploadMiddleware.single('file'), async (req,res) => {
     }
     
     const {token} = req.cookies
-    jwt.verify(token, secret, {}, async (err, info) =>{
+    jwt.verify(token, secret, {}, async (err, info) =>{ // Verifies the user via JWT
         if (err) throw err;
         const {id,title,summary,content} = req.body;
         const postDoc = await Post.findById(id);
@@ -118,7 +119,7 @@ app.put('/post', uploadMiddleware.single('file'), async (req,res) => {
     });
 });
 
-app.get('/post', async (req,res) =>{
+app.get('/post', async (req,res) =>{ // Fetches the latest 20 posts
     res.json(
         await Post.find()
         .populate('author', ['username'])
@@ -127,19 +128,19 @@ app.get('/post', async (req,res) =>{
     );
 });
 
-app.get('/post/:id', async (req, res) => {
+app.get('/post/:id', async (req, res) => { // Fetches a single post by ID
     const {id} = req.params;
     postDoc = await Post.findById(id).populate('author', ['username']);
     res.json(postDoc);
 })
 
-app.delete('/post/:id', async (req, res) => {
+app.delete('/post/:id', async (req, res) => { // Deletes a post 
     const { id } = req.params;
     const { token } = req.cookies;
   
     if (!token) return res.status(401).json("No token provided");
   
-    jwt.verify(token, secret, async (err, userInfo) => {
+    jwt.verify(token, secret, async (err, userInfo) => { // Checks if the user is the author before authenticating deletion
       if (err) return res.status(401).json("Invalid token");
   
       try {

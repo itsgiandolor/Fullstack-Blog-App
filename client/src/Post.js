@@ -2,7 +2,7 @@ import {formatISO9075} from "date-fns";
 import { Link } from "react-router-dom";
 
 export default function Post({_id,title, summary, cover, content, createdAt, author}) {
-    return (
+    return ( // Displays each full post in a specific format
         <div className="post">
             <div className="image">
                 <Link to={`/post/${_id}`}>
